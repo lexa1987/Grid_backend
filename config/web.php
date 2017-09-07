@@ -43,6 +43,8 @@ $config = [
             'enableStrictParsing' => true,
             'showScriptName' => false,
             'rules' => [
+                'GET grid' => 'grid/data',
+                'OPTIONS grid' => 'grid/options',
                 ['class' => 'yii\rest\UrlRule', 'controller' => 'user', 'except' => ['delete', 'create', 'update'],],
             ],
         ],
