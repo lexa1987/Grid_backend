@@ -45,6 +45,8 @@ $config = [
             'rules' => [
                 'GET grid' => 'grid/data',
                 'OPTIONS grid' => 'grid/options',
+                'GET grid/update' => 'grid/update',
+                'OPTIONS grid/update' => 'grid/options',
                 ['class' => 'yii\rest\UrlRule', 'controller' => 'user', 'except' => ['delete', 'create', 'update'],],
             ],
         ],

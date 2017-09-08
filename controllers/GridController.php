@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use Yii;
 use yii\rest\Controller;
 use yii\filters\Cors;
 /**
@@ -31,6 +32,14 @@ class GridController extends Controller {
     
     public function actionData() {
         $grid = new $this->modelClass();
+        $grid->parseScope();
+        return $grid->getData();
+    }
+    
+    public function actionUpdate() {
+        $grid = new $this->modelClass();
+        $grid->setScope(Yii::$app->request->getQueryParam('scope'));
+        $grid->parseScope();
         return $grid->getData();
     }
     
