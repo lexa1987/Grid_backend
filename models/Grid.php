@@ -34,31 +34,7 @@ class Grid extends Model {
         $this->params[":$column"] = implode(',', $arr);
         $this->$column = "(SELECT * FROM `$column` WHERE FIND_IN_SET($field, :$column) )";
     }
-    /*
-    private function parseUserScope($userScope) {
-        $usersArr = array_map(
-                function($u){return $u->id;}, 
-                $userScope);
-        $this->params[":user"] = implode(',', $usersArr);
-        $this->user = "(SELECT * FROM `user` WHERE FIND_IN_SET(id, :user) )";
-    }
-    
-    private function parseEducationScope($educationScope) {
-        $educationArr = array_map(
-                function($e){return $e->degree;}, 
-                $educationScope);
-        $this->params[':education'] = implode(',', $educationArr);
-        $this->education = "(SELECT * FROM `education` WHERE FIND_IN_SET(degree, :education) )";
-    }
-    
-    private function parseCityScope($cityScope) {
-        $citynArr = array_map(
-                function($c){return $c->name;}, 
-                $cityScope);
-        $this->params[':city'] = implode(',', $citynArr);
-        $this->city = "(SELECT * FROM `city` WHERE FIND_IN_SET(name, :city) )";
-    }
-*/
+
     private function parseScope() {
         if ($this->scope != []) {
             $scope = json_decode($this->scope);
