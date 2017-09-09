@@ -13,6 +13,8 @@ class Grid extends Model {
     
     private $scope = [];
     
+    private $params = [];
+            
     function setScope($scope) {
         $this->scope = $scope;
     }
@@ -25,36 +27,44 @@ class Grid extends Model {
         return $this->user;
     }
     
+    private function parseColumnScope($scope, $column, $field) {
+        $arr = array_map(
+                function($elem) use (&$field){return $elem->$field;},
+                $scope);
+        $this->params[":$column"] = implode(',', $arr);
+        $this->$column = "(SELECT * FROM `$column` WHERE FIND_IN_SET($field, :$column) )";
+    }
+    /*
     private function parseUserScope($userScope) {
         $usersArr = array_map(
                 function($u){return $u->id;}, 
                 $userScope);
-        $users = implode(', ', $usersArr);
-        $this->user = "(SELECT * FROM `user` WHERE `user`.id in ($users) )";
+        $this->params[":user"] = implode(',', $usersArr);
+        $this->user = "(SELECT * FROM `user` WHERE FIND_IN_SET(id, :user) )";
     }
     
     private function parseEducationScope($educationScope) {
         $educationArr = array_map(
-                function($e){return "'".$e->degree."'";}, 
+                function($e){return $e->degree;}, 
                 $educationScope);
-        $education = implode(', ', $educationArr);
-        $this->education = "(SELECT * FROM `education` WHERE `education`.degree in ($education) )";
+        $this->params[':education'] = implode(',', $educationArr);
+        $this->education = "(SELECT * FROM `education` WHERE FIND_IN_SET(degree, :education) )";
     }
     
     private function parseCityScope($cityScope) {
         $citynArr = array_map(
-                function($c){return "'".$c->name."'";}, 
+                function($c){return $c->name;}, 
                 $cityScope);
-        $city = implode(', ', $citynArr);
-        $this->city = "(SELECT * FROM `city` WHERE `city`.name in ($city) )";
+        $this->params[':city'] = implode(',', $citynArr);
+        $this->city = "(SELECT * FROM `city` WHERE FIND_IN_SET(name, :city) )";
     }
-
+*/
     private function parseScope() {
         if ($this->scope != []) {
             $scope = json_decode($this->scope);
-            if(property_exists($scope, 'users') && $scope->users!=[]) { $this->parseUserScope($scope->users);}
-            if(property_exists($scope, 'education')&& $scope->education!=[]) { $this->parseEducationScope($scope->education);}
-            if(property_exists($scope, 'city')&& $scope->city!=[]) { $this->parseCityScope($scope->city);}
+            if(property_exists($scope, 'users') && $scope->users!=[]) { $this->parseColumnScope($scope->users, 'user', 'id');}
+            if(property_exists($scope, 'education')&& $scope->education!=[]) { $this->parseColumnScope($scope->education, 'education', 'degree');}
+            if(property_exists($scope, 'city')&& $scope->city!=[]) { $this->parseColumnScope($scope->city, 'city', 'name');}
         }
     }
 
@@ -87,7 +97,13 @@ class Grid extends Model {
     }
             
     public function getData() {
-        $all = Yii::$app->db->createCommand($this->sql())->queryAll();
+        $sql =$this->sql();
+        $params = $this->params;
+        if ($params == []) {
+            $all = Yii::$app->db->createCommand($sql)->queryAll();
+        } else {
+            $all = Yii::$app->db->createCommand($sql, $params)->queryAll();
+        }
         return $all;
     }
     
