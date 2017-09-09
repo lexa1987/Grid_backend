@@ -2,16 +2,17 @@
 
 namespace app\controllers;
 
-use Yii;
-use yii\rest\Controller;
+use yii\rest\ActiveController;
 use yii\filters\Cors;
+
 /**
- * Description of GridController
+ * Поле Пользователи
  *
  * @author Lexa
  */
-class GridController extends Controller {
-    public $modelClass = 'app\models\Grid';
+class EducationController extends ActiveController {
+    
+    public $modelClass = 'app\models\Education';
     
     public function behaviors(){
         $behaviors = parent::behaviors();
@@ -30,15 +31,9 @@ class GridController extends Controller {
         
     }
     
-    public function actionData() {
-        $grid = new $this->modelClass();
-        return $grid->getData();
-    }
-    
-    public function actionUpdate() {
-        $grid = new $this->modelClass();
-        $grid->setScope(Yii::$app->request->getQueryParam('scope'));
-        return $grid->getData();
+    public function actionUnique() {
+        $model = new $this->modelClass();
+        return $model->getUnique();
     }
     
     public function actionOptions() {

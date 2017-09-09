@@ -55,4 +55,9 @@ class Education extends \yii\db\ActiveRecord
     {
         return $this->hasOne(User::className(), ['id' => 'user']);
     }
+    
+    public function getUnique()
+    {
+        return Education::find()->select('degree')->distinct()->all();;
+    }
 }

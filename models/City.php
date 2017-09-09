@@ -64,4 +64,9 @@ class City extends \yii\db\ActiveRecord
     {
         return $this->hasMany(City::className(), ['user' => 'id']);
     }
+    
+    public function getUnique()
+    {
+        return City::find()->select('name')->distinct()->all();
+    }
 }
