@@ -55,7 +55,10 @@ class Education extends \yii\db\ActiveRecord
     {
         return $this->hasOne(User::className(), ['id' => 'user']);
     }
-    
+    /**
+     * Получение уникальных значений 
+     * @return type array
+     */
     public function getUnique()
     {
         return Education::find()->select('degree')->distinct()->all();;

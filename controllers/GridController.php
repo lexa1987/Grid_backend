@@ -6,7 +6,7 @@ use Yii;
 use yii\rest\Controller;
 use yii\filters\Cors;
 /**
- * Description of GridController
+ * Контроллер для построения таблицы
  *
  * @author Lexa
  */
@@ -29,12 +29,18 @@ class GridController extends Controller {
         return $behaviors;
         
     }
-    
+    /**
+     * Первоначальные данные для таблицы
+     * @return type array
+     */
     public function actionData() {
         $grid = new $this->modelClass();
         return $grid->getData();
     }
-    
+    /**
+     * Обновленные данные для таблицы
+     * @return type array
+     */
     public function actionUpdate() {
         $grid = new $this->modelClass();
         $grid->setScope(Yii::$app->request->getQueryParam('scope'));

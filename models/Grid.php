@@ -5,14 +5,20 @@ namespace app\models;
 use Yii;
 use yii\base\Model;
 /**
- * Description of Grid
+ * Модель для генерации таблицы
  *
  * @author Lexa
  */
 class Grid extends Model {
-    
+    /**
+     *Область выбираемых значений
+     * @var type array
+     */
     private $scope = [];
-    
+    /**
+     *Параметры для sql запросов
+     * @var type array
+     */
     private $params = [];
             
     function setScope($scope) {
@@ -26,7 +32,12 @@ class Grid extends Model {
     function getUser() {
         return $this->user;
     }
-    
+    /**
+     * Парсинг для полей таблицы грида
+     * @param type $scope область
+     * @param type $column поле грида (таблица в БД)
+     * @param type $field параметр парсинга
+     */
     private function parseColumnScope($scope, $column, $field) {
         $arr = array_map(
                 function($elem) use (&$field){return $elem->$field;},
@@ -34,7 +45,9 @@ class Grid extends Model {
         $this->params[":$column"] = implode(',', $arr);
         $this->$column = "(SELECT * FROM `$column` WHERE FIND_IN_SET($field, :$column) )";
     }
-
+    /**
+     * Метод для парсинга значений и подготовка sql-запросов
+     */
     private function parseScope() {
         if ($this->scope != []) {
             $scope = json_decode($this->scope);
@@ -43,7 +56,10 @@ class Grid extends Model {
             if(property_exists($scope, 'city')&& $scope->city!=[]) { $this->parseColumnScope($scope->city, 'city', 'name');}
         }
     }
-
+    /**
+     * Подготовка sql-запрроса
+     * @return type String
+     */
     public function sql() {
         $this->parseScope();
         $sql = "SELECT
@@ -71,7 +87,10 @@ class Grid extends Model {
             u.id = c.user";
         return $sql;
     }
-            
+    /**
+     * Вывод данных для таблицы
+     * @return type array
+     */        
     public function getData() {
         $sql =$this->sql();
         $params = $this->params;

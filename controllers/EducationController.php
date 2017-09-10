@@ -30,7 +30,10 @@ class EducationController extends ActiveController {
         return $behaviors;
         
     }
-    
+    /**
+     * Получение уникальных значений 
+     * @return type array
+     */
     public function actionUnique() {
         $model = new $this->modelClass();
         return $model->getUnique();
